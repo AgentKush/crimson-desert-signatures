@@ -1,0 +1,63 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/community/crimson-desert-signatures/schema/signature.schema.json",
+  "title": "Crimson Desert signature database",
+  "type": "object",
+  "required": ["target", "entries"],
+  "properties": {
+    "target": {
+      "type": "object",
+      "required": ["module", "gameVersion"],
+      "properties": {
+        "module": { "type": "string", "description": "Module the signatures are scanned in, e.g. CrimsonDesert.exe" },
+        "gameVersion": { "type": "string", "description": "Exact build these were captured/verified on, e.g. 1.0.0.1744" },
+        "notes": { "type": "string" }
+      }
+    },
+    "entries": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/signature" }
+    }
+  },
+  "definitions": {
+    "signature": {
+      "type": "object",
+      "required": ["id", "name", "category", "pattern", "offset", "resolve", "verified", "gameVersion"],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z0-9]+(\\.[a-z0-9]+)+$",
+          "description": "Unique lowercase dotted id, e.g. player.position.write"
+        },
+        "name": { "type": "string" },
+        "description": { "type": "string" },
+        "category": {
+          "type": "string",
+          "description": "Grouping, e.g. player, camera, world, input, interaction, inventory, render"
+        },
+        "pattern": {
+          "type": "string",
+          "description": "IDA-style byte signature; '??' = wildcard. Empty string for an unverified placeholder."
+        },
+        "offset": {
+          "type": "integer",
+          "description": "Byte offset from the match to the address you actually want (0 if the match IS the target)."
+        },
+        "resolve": {
+          "type": "string",
+          "enum": ["none", "rip32"],
+          "description": "'none' = pattern+offset is the address. 'rip32' = follow a 32-bit rip-relative displacement at offset."
+        },
+        "verified": {
+          "type": "boolean",
+          "description": "true ONLY if you confirmed exactly one match on the stated gameVersion. Placeholders are false."
+        },
+        "gameVersion": { "type": "string" },
+        "contributor": { "type": "string" },
+        "references": { "type": "array", "items": { "type": "string" } },
+        "notes": { "type": "string" }
+      }
+    }
+  }
+}

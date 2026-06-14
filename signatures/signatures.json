@@ -1,0 +1,65 @@
+{
+  "target": {
+    "module": "CrimsonDesert.exe",
+    "gameVersion": "1.0.0.1744",
+    "notes": "CrimsonDesert.exe is packed/anti-tampered (real code in runtime-decrypted .xcode/.sbss sections). Signatures MUST be captured from the LIVE process in memory via an injected ASI (see docs/capturing-signatures.md), not from the on-disk file. All entries below are UNVERIFIED PLACEHOLDERS naming functions the community is already known to hook; fill in 'pattern' after capturing and set verified=true."
+  },
+  "entries": [
+    {
+      "id": "player.position.write",
+      "name": "Player position write",
+      "description": "Code that writes the player actor's world-space coordinates (X/Y/Z) each frame.",
+      "category": "player",
+      "pattern": "",
+      "offset": 0,
+      "resolve": "none",
+      "verified": false,
+      "gameVersion": "1.0.0.1744",
+      "contributor": "",
+      "references": ["https://www.nexusmods.com/crimsondesert/mods/366"],
+      "notes": "PLACEHOLDER. Capture: find the player X/Y/Z floats with Cheat Engine, 'find what writes', then build a pattern at that function. Known reachable (community position/teleport mods exist)."
+    },
+    {
+      "id": "player.status.modifier",
+      "name": "Player status (stamina/spirit) update",
+      "description": "Function that updates player stamina/spirit resources.",
+      "category": "player",
+      "pattern": "",
+      "offset": 0,
+      "resolve": "none",
+      "verified": false,
+      "gameVersion": "1.0.0.1744",
+      "contributor": "",
+      "references": ["https://www.nexusmods.com/crimsondesert/mods/52"],
+      "notes": "PLACEHOLDER. A community 'player status modifier' mod already targets this area."
+    },
+    {
+      "id": "camera.params.update",
+      "name": "Camera parameters update",
+      "description": "Function controlling camera distance / FOV / height (target of camera-overhaul mods).",
+      "category": "camera",
+      "pattern": "",
+      "offset": 0,
+      "resolve": "none",
+      "verified": false,
+      "gameVersion": "1.0.0.1744",
+      "contributor": "",
+      "references": [],
+      "notes": "PLACEHOLDER. Camera-overhaul ASI mods hook distance/height/FOV/steadycam/combat-zoom — confirmed reachable."
+    },
+    {
+      "id": "interaction.timer.write",
+      "name": "Hold-to-interact timer write",
+      "description": "Timer write for hold-to-interact prompts (target of instant-interact mods).",
+      "category": "interaction",
+      "pattern": "",
+      "offset": 0,
+      "resolve": "none",
+      "verified": false,
+      "gameVersion": "1.0.0.1744",
+      "contributor": "",
+      "references": ["https://www.nexusmods.com/crimsondesert/mods/178"],
+      "notes": "PLACEHOLDER. Note from community: the compiler emits the timer write in multiple inlined locations — expect to patch/hook more than one site."
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+﻿# build artifacts
+*.obj
+*.asi
+*.dll
+*.lib
+*.exp
+*.pdb
+*.ilk
+# python
+__pycache__/
+*.pyc
+# editor / OS
+.vs/
+.vscode/
+*.user
+Thumbs.db
+.DS_Store
+# local capture logs
+cdsig_probe.log
