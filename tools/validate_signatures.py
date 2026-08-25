@@ -52,12 +52,36 @@ def main() -> int:
             errors.append(f"{where}: verified=true but pattern is empty")
         if not e["verified"] and pat:
             warnings.append(f"{where}: has a pattern but verified=false (confirm uniqueness, then flip)")
+        # Build drift. A signature is only ever true of the build it was
+        # captured on, and this repo's own README states the cost of a
+        # wrong one: it resolves to the wrong address and crashes the
+        # game. So when the target build moves, a still-verified entry
+        # from the old build is the single most dangerous state the DB
+        # can be in -- it looks trustworthy and is not. Failing here is
+        # what makes bumping target.gameVersion produce a re-verification
+        # checklist instead of silently shipping last build's patterns.
+        if e["gameVersion"] != target.get("gameVersion"):
+            if e["verified"]:
+                errors.append(
+                    f"{where}: verified on {e['gameVersion']} but target is "
+                    f"{target.get('gameVersion')}; re-verify against the new "
+                    f"build and update gameVersion, or set verified=false")
+            else:
+                warnings.append(
+                    f"{where}: tagged {e['gameVersion']}, target is "
+                    f"{target.get('gameVersion')} (placeholder predates the "
+                    f"current build)")
 
     total = len(entries)
     verified = sum(1 for e in entries if e.get("verified"))
+    stale = sum(1 for e in entries
+                if e.get("gameVersion") != target.get("gameVersion"))
     print(f"DB: {DB.relative_to(ROOT)}")
     print(f"target: {target.get('module')} @ {target.get('gameVersion')}")
     print(f"entries: {total} | verified: {verified} | placeholders: {total - verified}")
+    if stale:
+        print(f"build drift: {stale} entr{'y' if stale == 1 else 'ies'} not "
+              f"tagged {target.get('gameVersion')}")
     for w in warnings: print(f"  warn: {w}")
     for er in errors: print(f"  ERROR: {er}")
     if errors:

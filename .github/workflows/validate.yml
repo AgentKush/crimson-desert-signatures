@@ -1,0 +1,41 @@
+name: Validate signatures
+
+# The DB is the product here, and a wrong entry is worse than a missing
+# one -- README's own warning is that a bad signature resolves to the
+# wrong address and crashes the game. The validator already encoded that
+# rule; nothing ran it. This does, on every change that can reach the DB.
+#
+# It needs no game install and no Windows: every check is a property of
+# the JSON itself (schema shape, id uniqueness, IDA-style pattern syntax,
+# verified-vs-empty, and build drift against target.gameVersion).
+
+on:
+  push:
+    paths:
+      - "signatures/**"
+      - "schema/**"
+      - "tools/validate_signatures.py"
+      - ".github/workflows/validate.yml"
+  pull_request:
+    paths:
+      - "signatures/**"
+      - "schema/**"
+      - "tools/validate_signatures.py"
+      - ".github/workflows/validate.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      # The validator is stdlib-only by design, so there is nothing to
+      # install and nothing to pin.
+      - name: Validate signatures.json
+        run: python tools/validate_signatures.py
